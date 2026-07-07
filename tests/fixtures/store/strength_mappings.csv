@@ -1,0 +1,3 @@
+﻿input_source_format,marker_key,source_value_or_marker,normalized_label,normalized_score,mapping_confidence,notes
+fmt_test,asterisk_uppercase,leading asterisk plus uppercase,holy_grail,4,medium,
+fmt_test,plain,ordinary/lowercase text,,,low,no invented score

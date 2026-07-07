@@ -1,0 +1,4 @@
+﻿source_id,source_record_id,row_type,subject_clean,entry_clean,attribute_name,attribute_value_raw,strength_marker_raw,strength_label,strength_score,strength_method,parser_confidence,requires_review
+src_test_alpha,src_test_alpha:aaaa000000000001:1,pairing_candidate,apple,cinnamon,,,,,,,high,0
+src_test_alpha,src_test_alpha:aaaa000000000002:1,pairing_candidate,apple,caramel,,,*CARAMEL,holy_grail,4,asterisk_uppercase,high,0
+src_test_beta,src_test_beta:bbbb000000000001:1,pairing_candidate,chard,anchovy,,,heaven,holy_grail,4,explicit_label:heaven,high,0

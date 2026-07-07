@@ -1,0 +1,4 @@
+﻿source_id,source_record_id,source_order,subject_raw,entry_raw,quality_raw,raw_payload_json
+src_test_alpha,src_test_alpha:aaaa000000000001:1,1,APPLE,cinnamon,,"{""note"":""plain""}"
+src_test_alpha,src_test_alpha:aaaa000000000002:1,2,APPLE,*CARAMEL,,
+src_test_beta,src_test_beta:bbbb000000000001:1,1,CHARD,anchovy,heaven,
