@@ -1,0 +1,6 @@
+﻿source_format,source_label,attribute_name,notes
+main_pairing_csv,Season,season,Recognized attribute-line label; matched case-insensitively before a colon.
+main_pairing_csv,Taste,taste,Recognized attribute-line label; matched case-insensitively before a colon.
+main_pairing_csv,Weight,weight,Recognized attribute-line label; matched case-insensitively before a colon.
+main_pairing_csv,Techniques,techniques,Recognized attribute-line label; matched case-insensitively before a colon.
+main_pairing_csv,Tips,tips,Recognized attribute-line label; matched case-insensitively before a colon.

@@ -6,6 +6,7 @@ data/raw_private/
 data/licensed/
 data/imports_private/
 data/exports_private/
+data/build/
 *.epub
 *.mobi
 *.azw*
@@ -13,3 +14,4 @@ data/exports_private/
 *.sqlite
 *.db
 .DS_Store
+.claude/
