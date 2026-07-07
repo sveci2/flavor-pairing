@@ -82,3 +82,22 @@ Do not convert every lowercase row to score 1.
 ## Fable build requirement
 
 Fable must build imports against `raw_source_rows.csv`, not against a fixed list of 100 ingredients. All derived tables must be regenerable from raw rows and mapping/review decisions.
+
+## Development
+
+The runtime code is Python standard library only; `pytest` is a development-only dependency.
+
+```bash
+# create and activate a virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# install development dependencies
+pip install -r requirements-dev.txt
+
+# run the test suite
+python3 -m pytest
+
+# validate the sample data package
+python3 scripts/validate_sample.py
+```
