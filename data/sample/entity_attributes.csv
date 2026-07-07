@@ -1,0 +1,7 @@
+﻿attribute_id,source_id,source_record_id,entity_id,attribute_name,attribute_value_raw,attribute_value_normalized,normalization_method,review_status
+attr_0001,src_synthetic_main_pairing,mp_0001,ent_0001,season,autumn,,not_normalized,needs_review
+attr_0002,src_synthetic_main_pairing,mp_0002,ent_0001,taste,"sweet, tart",,not_normalized,needs_review
+attr_0003,src_synthetic_main_pairing,mp_0003,ent_0001,weight,medium,,not_normalized,needs_review
+attr_0004,src_synthetic_main_pairing,mp_0004,ent_0001,techniques,"bake, poach, raw",,not_normalized,needs_review
+attr_0005,src_synthetic_main_pairing,mp_0010,ent_0002,taste,"sweet, sour, umami",,not_normalized,needs_review
+attr_0006,src_synthetic_main_pairing,mp_0016,ent_0003,tips,add near the end,,not_normalized,needs_review

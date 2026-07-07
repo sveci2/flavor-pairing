@@ -1,0 +1,11 @@
+﻿observation_id,source_id,source_record_id,subject_entity_id,paired_entity_id,paired_text_raw,strength_label,strength_score,strength_method,normalization_status,review_status
+obs_0001,src_synthetic_main_pairing,mp_0005,ent_0001,ent_0005,cinnamon,,,unavailable,mapped,needs_review
+obs_0002,src_synthetic_main_pairing,mp_0006,ent_0001,ent_0006,WALNUT,very_high,3,typographic_marker,mapped,needs_review
+obs_0003,src_synthetic_main_pairing,mp_0007,ent_0001,ent_0007,*CARAMEL,holy_grail,4,typographic_marker,mapped,needs_review
+obs_0004,src_synthetic_main_pairing,mp_0011,ent_0002,ent_0003,basil,,,unavailable,mapped,needs_review
+obs_0005,src_synthetic_main_pairing,mp_0012,ent_0002,ent_0008,GARLIC,very_high,3,typographic_marker,mapped,needs_review
+obs_0006,src_synthetic_main_pairing,mp_0015,ent_0003,ent_0002,tomato,,,unavailable,mapped,needs_review
+obs_0007,src_synthetic_quality,q_0001,ent_0004,ent_0010,anchovy,holy_grail,4,explicit_quality_label,mapped,needs_review
+obs_0008,src_synthetic_quality,q_0002,ent_0004,ent_0011,bacon,very_high,3,explicit_quality_label,mapped,needs_review
+obs_0009,src_synthetic_quality,q_0003,ent_0004,ent_0003,basil,frequent,2,explicit_quality_label,mapped,needs_review
+obs_0010,src_synthetic_quality,q_0004,ent_0004,ent_0012,blue cheese,recommended,1,explicit_quality_label,mapped,needs_review

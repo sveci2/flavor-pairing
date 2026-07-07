@@ -1,0 +1,8 @@
+﻿input_source_format,source_value_or_marker,normalized_label,normalized_score,mapping_confidence,notes
+pair_quality_csv,heaven,holy_grail,4,high,Explicit quality label.
+pair_quality_csv,high_rec,very_high,3,high,Explicit quality label.
+pair_quality_csv,freq_rec,frequent,2,high,Explicit quality label.
+pair_quality_csv,rec,recommended,1,high,Explicit quality label.
+main_pairing_csv,leading asterisk plus uppercase,holy_grail,4,medium,Only use when the extraction demonstrably preserves typographic markers.
+main_pairing_csv,uppercase text,very_high,3,medium,Uppercase may preserve one typographic tier; verify against the source extraction.
+main_pairing_csv,ordinary/lowercase text,,,low,Do not guess score 1 versus 2 when bold formatting has been lost.

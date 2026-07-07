@@ -1,0 +1,21 @@
+﻿source_id,source_record_id,row_type,subject_clean,entry_clean,attribute_name,attribute_value_raw,strength_marker_raw,strength_label,strength_score,strength_method,parser_confidence,requires_review
+src_synthetic_main_pairing,mp_0001,attribute,apple,Season: autumn,season,autumn,,,,unavailable,high,0
+src_synthetic_main_pairing,mp_0002,attribute,apple,"Taste: sweet, tart",taste,"sweet, tart",,,,unavailable,high,0
+src_synthetic_main_pairing,mp_0003,attribute,apple,Weight: medium,weight,medium,,,,unavailable,high,0
+src_synthetic_main_pairing,mp_0004,attribute,apple,"Techniques: bake, poach, raw",techniques,"bake, poach, raw",,,,unavailable,high,0
+src_synthetic_main_pairing,mp_0005,pairing_candidate,apple,cinnamon,,,,,,unavailable,medium,0
+src_synthetic_main_pairing,mp_0006,pairing_candidate,apple,walnut,,,uppercase,very_high,3,typographic_marker,medium,0
+src_synthetic_main_pairing,mp_0007,pairing_candidate,apple,caramel,,,*+uppercase,holy_grail,4,typographic_marker,medium,0
+src_synthetic_main_pairing,mp_0008,affinity_header,apple,flavor affinities,,,,,,unavailable,high,0
+src_synthetic_main_pairing,mp_0009,affinity_group,apple,apple + cinnamon + walnut,,,,,,unavailable,high,0
+src_synthetic_main_pairing,mp_0010,attribute,tomato,"Taste: sweet, sour, umami",taste,"sweet, sour, umami",,,,unavailable,high,0
+src_synthetic_main_pairing,mp_0011,pairing_candidate,tomato,basil,,,,,,unavailable,medium,0
+src_synthetic_main_pairing,mp_0012,pairing_candidate,tomato,garlic,,,uppercase,very_high,3,typographic_marker,medium,0
+src_synthetic_main_pairing,mp_0013,affinity_header,tomato,flavor affinities,,,,,,unavailable,high,0
+src_synthetic_main_pairing,mp_0014,affinity_group,tomato,tomato + basil + olive oil,,,,,,unavailable,high,0
+src_synthetic_main_pairing,mp_0015,pairing_candidate,basil,tomato,,,,,,unavailable,medium,0
+src_synthetic_main_pairing,mp_0016,attribute,basil,Tips: add near the end,tips,add near the end,,,,unavailable,high,0
+src_synthetic_quality,q_0001,pairing_candidate,chard,anchovy,,,heaven,holy_grail,4,explicit_quality_label,medium,0
+src_synthetic_quality,q_0002,pairing_candidate,chard,bacon,,,high_rec,very_high,3,explicit_quality_label,medium,0
+src_synthetic_quality,q_0003,pairing_candidate,chard,basil,,,freq_rec,frequent,2,explicit_quality_label,medium,0
+src_synthetic_quality,q_0004,pairing_candidate,chard,blue cheese,,,rec,recommended,1,explicit_quality_label,medium,0

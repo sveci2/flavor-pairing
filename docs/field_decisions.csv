@@ -1,0 +1,15 @@
+﻿table,field_or_field_group,status,reason,compatible_with_source_import
+raw_source_rows.csv,subject_raw,required_source,Directly available as `main` or `ingredient1`.,Yes
+raw_source_rows.csv,entry_raw,required_source,Directly available as `pairing` or `ingredient2`.,Yes
+raw_source_rows.csv,quality_raw,optional_source,Available in some datasets; absent in the two-column GitHub CSV.,Yes
+parsed_source_rows.csv,row_type,derived_nullable,"Parser classifies attribute, pairing, affinity, or unclassified.",Yes
+entities.csv,canonical_name,derived_reviewed,Created by normalization; must retain original text separately.,Yes
+entities.csv,entity_type,optional_reviewed,"The source contains ingredients, cuisines, dishes, techniques, and categories.",Yes
+entity_attributes.csv,attribute_name/value,source_derived,"Season, taste, function, weight, volume, techniques, tips, etc.",Yes
+pairing_observations.csv,strength_score,derived_nullable,Populate only when quality or typography survives reliably.,Yes
+affinity_groups.csv,affinity_text_raw,required_for_affinity,Preserves multi-ingredient affinity text.,Yes
+allergens/vegan/nutrition,not_in_core,Not consistently present in these sources; add via separate licensed enrichment.,No,
+numeric taste profile,not_in_core,Not present as measured numbers; never fabricate.,No,
+pairing explanation,not_in_core,Can be generated later but is not source truth.,No,
+context/cuisine/technique for every pairing,not_in_core,Only store when explicitly present in a source.,No,
+confidence/evidence_count,derived_later,Computed after multiple observations; not manually fabricated.,No,

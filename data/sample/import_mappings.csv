@@ -1,0 +1,7 @@
+﻿source_format,input_column,target_file,target_field,transform_rule,required
+main_pairing_csv,main,raw_source_rows.csv,subject_raw,copy exactly,1
+main_pairing_csv,pairing,raw_source_rows.csv,entry_raw,copy exactly,1
+main_pairing_csv,(not present),raw_source_rows.csv,quality_raw,leave blank,0
+pair_quality_csv,ingredient1,raw_source_rows.csv,subject_raw,copy exactly,1
+pair_quality_csv,ingredient2,raw_source_rows.csv,entry_raw,copy exactly,1
+pair_quality_csv,quality,raw_source_rows.csv,quality_raw,copy exactly; normalize only through documented mapping,0

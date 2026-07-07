@@ -1,0 +1,7 @@
+﻿affinity_id,member_order,member_entity_id,member_text_raw,normalization_status
+aff_0001,1,ent_0001,apple,mapped
+aff_0001,2,ent_0005,cinnamon,mapped
+aff_0001,3,ent_0006,walnut,mapped
+aff_0002,1,ent_0002,tomato,mapped
+aff_0002,2,ent_0003,basil,mapped
+aff_0002,3,ent_0009,olive oil,mapped

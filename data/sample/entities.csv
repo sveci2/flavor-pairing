@@ -1,0 +1,13 @@
+﻿entity_id,canonical_name,display_name,entity_type,parent_entity_id,normalization_status,review_status,notes
+ent_0001,apple,Apple,ingredient,,demo_auto_mapped,needs_review,Synthetic sample entity.
+ent_0002,tomato,Tomato,ingredient,,demo_auto_mapped,needs_review,Synthetic sample entity.
+ent_0003,basil,Basil,ingredient,,demo_auto_mapped,needs_review,Synthetic sample entity.
+ent_0004,chard,Chard,ingredient,,demo_auto_mapped,needs_review,Synthetic sample entity.
+ent_0005,cinnamon,Cinnamon,ingredient,,demo_auto_mapped,needs_review,Synthetic sample entity.
+ent_0006,walnut,Walnut,ingredient,,demo_auto_mapped,needs_review,Synthetic sample entity.
+ent_0007,caramel,Caramel,ingredient,,demo_auto_mapped,needs_review,Synthetic sample entity.
+ent_0008,garlic,Garlic,ingredient,,demo_auto_mapped,needs_review,Synthetic sample entity.
+ent_0009,olive oil,Olive Oil,ingredient,,demo_auto_mapped,needs_review,Synthetic sample entity.
+ent_0010,anchovy,Anchovy,ingredient,,demo_auto_mapped,needs_review,Synthetic sample entity.
+ent_0011,bacon,Bacon,ingredient,,demo_auto_mapped,needs_review,Synthetic sample entity.
+ent_0012,blue cheese,Blue Cheese,ingredient,,demo_auto_mapped,needs_review,Synthetic sample entity.

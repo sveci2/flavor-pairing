@@ -1,0 +1,5 @@
+﻿source_id,source_name,source_format,source_uri,rights_status,allowed_use,notes
+src_synthetic_main_pairing,Synthetic main/pairing format example,main_pairing_csv,,project_owned_demo,software_testing,Original structural example. Mimics a two-column source format without reproducing a source dataset.
+src_synthetic_quality,Synthetic ingredient/ingredient/quality format example,pair_quality_csv,,project_owned_demo,software_testing,Original structural example containing explicit quality labels.
+src_reference_github_main_pairing,Public GitHub flavour-bible CSV reference,main_pairing_csv,https://github.com/andersvanwinkle/flavor-bible/blob/main/flavor_bible_full.csv,unverified_no_repository_licence_recorded,reference_only_until_rights_review,Reference mapping only; the dataset itself is not included in this package.
+src_reference_gist_quality,Public Gist ingredient-pair-quality reference,pair_quality_csv,https://gist.github.com/dhoboy/2127788,unverified,reference_only_until_rights_review,Reference mapping only; the dataset itself is not included in this package.
