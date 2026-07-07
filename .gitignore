@@ -1,0 +1,15 @@
+.env
+.env.*
+__pycache__/
+*.pyc
+data/raw_private/
+data/licensed/
+data/imports_private/
+data/exports_private/
+*.epub
+*.mobi
+*.azw*
+*.pdf
+*.sqlite
+*.db
+.DS_Store
