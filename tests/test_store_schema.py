@@ -34,21 +34,27 @@ def _table_names(connection):
 # Table existence
 # ---------------------------------------------------------------------------
 
-def test_all_thirteen_tables_created(conn):
-    assert _table_names(conn) == set(TABLES)
+LEDGER_TABLES = {"import_runs", "run_rows"}
+
+
+def test_all_fifteen_tables_created(conn):
+    # The 13 CP2 tables (TABLES) plus the two CP3A ledger tables, which are
+    # deliberately not part of TABLES/csv_io's templated round-trip metadata
+    # (docs/DATA_FOUNDATION_PLAN.md §3: the ledger has its own append-only,
+    # per-source_id convention, not the single-directory template convention).
+    assert _table_names(conn) == set(TABLES) | LEDGER_TABLES
 
 
 def test_initialize_schema_is_idempotent(conn):
     db.initialize_schema(conn)  # second call must not raise
-    assert _table_names(conn) == set(TABLES)
+    assert _table_names(conn) == set(TABLES) | LEDGER_TABLES
 
 
-def test_ledger_and_derived_aggregate_tables_not_created(conn):
-    # import_runs/run_rows (CP3 ledger) and pairing_edges (derived aggregate,
-    # out of scope this phase) must not appear.
-    assert "import_runs" not in _table_names(conn)
-    assert "run_rows" not in _table_names(conn)
+def test_derived_aggregate_table_not_created(conn):
+    # pairing_edges (derived aggregate, out of scope this phase) must not
+    # appear. import_runs/run_rows (CP3A ledger) now do.
     assert "pairing_edges" not in _table_names(conn)
+    assert LEDGER_TABLES <= _table_names(conn)
 
 
 # ---------------------------------------------------------------------------
@@ -102,6 +108,76 @@ def test_affinity_members_rejects_unknown_affinity_group(conn):
     with pytest.raises(sqlite3.IntegrityError):
         conn.execute(
             "INSERT INTO affinity_members (affinity_id, member_order) VALUES ('aff_missing', 1)"
+        )
+
+
+def test_import_runs_rejects_unknown_source(conn):
+    with pytest.raises(sqlite3.IntegrityError):
+        conn.execute(
+            "INSERT INTO import_runs (run_id, source_id, started_at, status) "
+            "VALUES ('run_1', 'src_missing', '2026-01-01T00:00:00+00:00', 'completed')"
+        )
+
+
+def test_import_runs_status_check_constraint_rejects_invalid_value(conn):
+    conn.execute(
+        "INSERT INTO sources (source_id, source_name, source_format, rights_status) "
+        "VALUES ('src_a', 'A', 'fmt_a', 'project_owned_demo')"
+    )
+    with pytest.raises(sqlite3.IntegrityError):
+        conn.execute(
+            "INSERT INTO import_runs (run_id, source_id, started_at, status) "
+            "VALUES ('run_1', 'src_a', '2026-01-01T00:00:00+00:00', 'bogus')"
+        )
+
+
+def test_run_rows_rejects_unknown_run(conn):
+    with pytest.raises(sqlite3.IntegrityError):
+        conn.execute(
+            "INSERT INTO run_rows (run_id, source_record_id, source_order) "
+            "VALUES ('run_missing', 'src_a:hash:1', 1)"
+        )
+
+
+def test_run_rows_rejects_unknown_source_record_id(conn):
+    conn.execute(
+        "INSERT INTO sources (source_id, source_name, source_format, rights_status) "
+        "VALUES ('src_a', 'A', 'fmt_a', 'project_owned_demo')"
+    )
+    conn.execute(
+        "INSERT INTO import_runs (run_id, source_id, started_at, status) "
+        "VALUES ('run_1', 'src_a', '2026-01-01T00:00:00+00:00', 'in_progress')"
+    )
+    with pytest.raises(sqlite3.IntegrityError):
+        conn.execute(
+            "INSERT INTO run_rows (run_id, source_record_id, source_order) "
+            "VALUES ('run_1', 'src_a:missing:1', 1)"
+        )
+
+
+def test_raw_source_rows_source_record_id_unique_across_sources(conn):
+    # source_record_id already embeds source_id (docs/DECISIONS.md §H), so a
+    # standalone UNIQUE constraint (independent of the composite PRIMARY KEY)
+    # is expected, not incidental — it's what lets run_rows reference
+    # source_record_id alone.
+    conn.execute(
+        "INSERT INTO sources (source_id, source_name, source_format, rights_status) "
+        "VALUES ('src_a', 'A', 'fmt_a', 'project_owned_demo')"
+    )
+    conn.execute(
+        "INSERT INTO sources (source_id, source_name, source_format, rights_status) "
+        "VALUES ('src_b', 'B', 'fmt_a', 'project_owned_demo')"
+    )
+    conn.execute(
+        "INSERT INTO raw_source_rows "
+        "(source_id, source_record_id, source_order, subject_raw, entry_raw) "
+        "VALUES ('src_a', 'dup_id', 1, 'X', 'Y')"
+    )
+    with pytest.raises(sqlite3.IntegrityError):
+        conn.execute(
+            "INSERT INTO raw_source_rows "
+            "(source_id, source_record_id, source_order, subject_raw, entry_raw) "
+            "VALUES ('src_b', 'dup_id', 1, 'X', 'Y')"
         )
 
 

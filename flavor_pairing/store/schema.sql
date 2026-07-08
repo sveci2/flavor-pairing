@@ -11,9 +11,9 @@
 -- Every other column is left nullable rather than inventing undocumented
 -- required-ness (CLAUDE.md: never invent missing information).
 --
--- Out of scope for CP2 (see docs/DATA_FOUNDATION_PLAN.md §20-21): import_runs
--- and run_rows (ledger, CP3) and pairing_edges (derived aggregate, out of
--- scope this phase).
+-- import_runs and run_rows (ledger) were added in CP3A. pairing_edges
+-- (derived aggregate) remains out of scope this phase
+-- (docs/DATA_FOUNDATION_PLAN.md §20-21).
 
 -- docs/SCHEMA.md §1 — provenance and rights registry.
 CREATE TABLE IF NOT EXISTS sources (
@@ -45,6 +45,10 @@ CREATE TABLE IF NOT EXISTS entities (
 -- docs/SCHEMA.md §2 — immutable staging table. Required source content per
 -- §2: source_order, subject_raw, entry_raw. Natural key (source_id,
 -- source_record_id) used throughout downstream tables (plan §12).
+-- source_record_id carries a standalone UNIQUE constraint (in addition to
+-- the composite PRIMARY KEY) so that run_rows (below) can reference it
+-- without duplicating source_id; source_record_id already embeds source_id
+-- (docs/DECISIONS.md §H), so global uniqueness is expected, not incidental.
 CREATE TABLE IF NOT EXISTS raw_source_rows (
     source_id           TEXT NOT NULL,
     source_record_id    TEXT NOT NULL,
@@ -54,6 +58,7 @@ CREATE TABLE IF NOT EXISTS raw_source_rows (
     quality_raw         TEXT,
     raw_payload_json    TEXT,
     PRIMARY KEY (source_id, source_record_id),
+    UNIQUE (source_record_id),
     FOREIGN KEY (source_id) REFERENCES sources (source_id)
 );
 
@@ -217,4 +222,36 @@ CREATE TABLE IF NOT EXISTS affinity_split_rules (
     review_status             TEXT,
     notes                     TEXT,
     PRIMARY KEY (source_format)
+);
+
+-- docs/SCHEMA.md §11 — durable, append-only run ledger (CP3A). Mirrored into
+-- SQLite from data/ledger/<source_id>/*.csv at load time
+-- (flavor_pairing/store/ledger.py); the working copy here is disposable, the
+-- CSV ledger is the durable record (docs/DECISIONS.md §G amendment).
+-- finished_at/input_file_hash/row_count are nullable: a failed or
+-- in-progress run may not have determined them yet (never invent a value
+-- that was not actually known).
+CREATE TABLE IF NOT EXISTS import_runs (
+    run_id             TEXT NOT NULL,
+    source_id          TEXT NOT NULL,
+    started_at         TEXT NOT NULL,
+    finished_at        TEXT,
+    input_file_hash    TEXT,
+    row_count          INTEGER,
+    status             TEXT NOT NULL CHECK (status IN ('completed', 'failed', 'in_progress')),
+    PRIMARY KEY (run_id),
+    FOREIGN KEY (source_id) REFERENCES sources (source_id)
+);
+
+-- docs/SCHEMA.md §11 — complete row membership and per-version ordering for
+-- one run. Only completed runs' rows here are ever written
+-- (flavor_pairing/ingest/runs.py); the latest completed run for a source
+-- defines its current version (docs/DECISIONS.md §H).
+CREATE TABLE IF NOT EXISTS run_rows (
+    run_id              TEXT NOT NULL,
+    source_record_id    TEXT NOT NULL,
+    source_order        INTEGER NOT NULL,
+    PRIMARY KEY (run_id, source_record_id),
+    FOREIGN KEY (run_id) REFERENCES import_runs (run_id),
+    FOREIGN KEY (source_record_id) REFERENCES raw_source_rows (source_record_id)
 );
