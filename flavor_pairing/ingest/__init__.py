@@ -1,16 +1,24 @@
-"""Ingest layer: source-record identity and import-run tracking (CP3A scope).
+"""Ingest layer: source-record identity, import-run tracking, and
+mapping-driven raw ingestion (CP3A + CP3B scope).
 
-Public API re-exported from :mod:`flavor_pairing.ingest.identity` and
-:mod:`flavor_pairing.ingest.runs`. File-based raw ingestion from arbitrary
-external files (``raw_ingest.py``), source adapters, rights enforcement, and
-the ``import_to_raw.py`` CLI wrapper are out of scope for CP3A — see
-``docs/DATA_FOUNDATION_PLAN.md`` §4/§10/§20-21.
+Public API re-exported from :mod:`flavor_pairing.ingest.identity`,
+:mod:`flavor_pairing.ingest.runs`, :mod:`flavor_pairing.ingest.raw_ingest`,
+and :mod:`flavor_pairing.ingest.rights`. Source adapters for non-tabular
+formats and the CLI wrapper's real private-path default remain outside this
+package — see ``docs/DATA_FOUNDATION_PLAN.md`` §4/§10/§20-21.
 """
 
 from flavor_pairing.ingest.identity import (
     RawRowContent,
     assign_source_record_ids,
     content_hash16,
+)
+from flavor_pairing.ingest.raw_ingest import IngestError, ingest_file, read_mapped_csv
+from flavor_pairing.ingest.rights import (
+    SAFE_RIGHTS_STATUSES,
+    RightsError,
+    is_public_safe,
+    resolve_ledger_root,
 )
 from flavor_pairing.ingest.runs import (
     RUN_STATUS_COMPLETED,
@@ -31,6 +39,13 @@ __all__ = [
     "RawRowContent",
     "assign_source_record_ids",
     "content_hash16",
+    "IngestError",
+    "ingest_file",
+    "read_mapped_csv",
+    "SAFE_RIGHTS_STATUSES",
+    "RightsError",
+    "is_public_safe",
+    "resolve_ledger_root",
     "RUN_STATUS_COMPLETED",
     "RUN_STATUS_FAILED",
     "RUN_STATUS_IN_PROGRESS",

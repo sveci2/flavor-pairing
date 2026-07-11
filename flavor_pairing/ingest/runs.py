@@ -163,6 +163,7 @@ def record_completed_run(
     run_id: Optional[str] = None,
     clock: Optional[Clock] = None,
     ledger_root: Path = ledger.DEFAULT_LEDGER_ROOT,
+    input_file_hash: Optional[str] = None,
 ) -> RunOutcome:
     """Ingest one version's rows as a single all-or-nothing completed run.
 
@@ -179,11 +180,21 @@ def record_completed_run(
       or run_rows are left behind, then re-raises.
     - Mirrors the completed ``import_runs``/``run_rows`` rows into the
       durable append-only ledger only after the SQLite commit succeeds.
+
+    ``input_file_hash``: override for the CP3A row-content stand-in
+    (:func:`compute_input_file_hash`). CP3B's ``raw_ingest.ingest_file``
+    passes the real external file's byte-for-byte SHA-256 here, so that
+    "was this a repeat of the same file" is a direct comparison of stored
+    ``import_runs.input_file_hash`` values rather than a hash of already-
+    parsed rows. Callers that have no real file (as in every CP3A test)
+    omit this and get the CP3A stand-in unchanged.
     """
     resolved_run_id = run_id or make_run_id(source_id, clock=clock)
     started_at = _iso(clock)
     record_ids = assign_source_record_ids(source_id, rows)
-    input_file_hash = compute_input_file_hash(rows)
+    resolved_input_file_hash = (
+        input_file_hash if input_file_hash is not None else compute_input_file_hash(rows)
+    )
     row_count = len(rows)
 
     try:
@@ -226,7 +237,7 @@ def record_completed_run(
                 source_id,
                 started_at,
                 finished_at,
-                input_file_hash,
+                resolved_input_file_hash,
                 row_count,
                 RUN_STATUS_COMPLETED,
             ),
@@ -255,7 +266,7 @@ def record_completed_run(
             "source_id": source_id,
             "started_at": started_at,
             "finished_at": finished_at,
-            "input_file_hash": input_file_hash,
+            "input_file_hash": resolved_input_file_hash,
             "row_count": row_count,
             "status": RUN_STATUS_COMPLETED,
         },
@@ -269,7 +280,7 @@ def record_completed_run(
         status=RUN_STATUS_COMPLETED,
         started_at=started_at,
         finished_at=finished_at,
-        input_file_hash=input_file_hash,
+        input_file_hash=resolved_input_file_hash,
         row_count=row_count,
         inserted_source_record_ids=tuple(inserted),
         run_row_source_record_ids=tuple(record_ids),
