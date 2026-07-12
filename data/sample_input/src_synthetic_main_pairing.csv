@@ -1,0 +1,17 @@
+main,pairing
+APPLE,Season: autumn
+APPLE,"Taste: sweet, tart"
+APPLE,Weight: medium
+APPLE,"Techniques: bake, poach, raw"
+APPLE,cinnamon
+APPLE,WALNUT
+APPLE,*CARAMEL
+APPLE,Flavor Affinities
+APPLE,apple + cinnamon + walnut
+TOMATO,"Taste: sweet, sour, umami"
+TOMATO,basil
+TOMATO,GARLIC
+TOMATO,Flavor Affinities
+TOMATO,tomato + basil + olive oil
+BASIL,tomato
+BASIL,Tips: add near the end

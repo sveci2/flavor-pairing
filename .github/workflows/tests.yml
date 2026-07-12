@@ -1,0 +1,33 @@
+name: tests
+
+# CP7 CI: compile, test, prove the committed sample regenerates
+# byte-identically (--check never modifies the checkout), validate, and
+# whitespace-check. No secrets, no private data, no deployment.
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - feature/data-foundation
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install development dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Byte-compile runtime and scripts
+        run: python -m compileall -q flavor_pairing scripts
+      - name: Run the test suite
+        run: python -m pytest
+      - name: Verify the committed sample regenerates byte-identically
+        run: python scripts/regenerate_sample.py --check
+      - name: Validate the committed sample package
+        run: python scripts/validate_sample.py
+      - name: Whitespace check
+        run: git diff --check

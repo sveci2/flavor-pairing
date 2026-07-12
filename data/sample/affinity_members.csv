@@ -1,7 +1,7 @@
 ﻿affinity_id,member_order,member_entity_id,member_text_raw,normalization_status
-aff_0001,1,ent_0001,apple,mapped
-aff_0001,2,ent_0005,cinnamon,mapped
-aff_0001,3,ent_0006,walnut,mapped
-aff_0002,1,ent_0002,tomato,mapped
-aff_0002,2,ent_0003,basil,mapped
-aff_0002,3,ent_0009,olive oil,mapped
+aff_062b48910a2c8d3d,1,ent_0002,tomato,auto_mapped
+aff_062b48910a2c8d3d,2,ent_0003,basil,auto_mapped
+aff_062b48910a2c8d3d,3,ent_0009,olive oil,auto_mapped
+aff_b337364c3d64a517,1,ent_0001,apple,auto_mapped
+aff_b337364c3d64a517,2,ent_0005,cinnamon,auto_mapped
+aff_b337364c3d64a517,3,ent_0006,walnut,auto_mapped

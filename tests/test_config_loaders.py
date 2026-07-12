@@ -284,7 +284,18 @@ def test_runtime_imports_no_network_modules():
 
 
 def test_runtime_never_references_imports_private():
+    """Runtime code may never reference the private data path.
+
+    Sole exception: a line *defining* the PRIVATE_PATH_MARKER enforcement
+    constant (CP7 validation uses the literal to detect and reject the
+    marker in data). Any other occurrence — an actual path reference —
+    still fails.
+    """
     for path in _runtime_files():
-        assert "imports_private" not in path.read_text(encoding="utf-8"), (
-            f"{path} references data/imports_private/"
-        )
+        for line_number, line in enumerate(
+            path.read_text(encoding="utf-8").splitlines(), start=1
+        ):
+            if "imports_private" in line:
+                assert line.strip().startswith("PRIVATE_PATH_MARKER ="), (
+                    f"{path}:{line_number} references data/imports_private/: {line.strip()}"
+                )
