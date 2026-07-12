@@ -15,6 +15,7 @@ from typing import Iterable, List, Optional, Sequence, Tuple
 from flavor_pairing.config.loaders import load_config
 from flavor_pairing.ingest.identity import RawRowContent
 from flavor_pairing.ingest.runs import record_completed_run
+from flavor_pairing.normalize.affinities import AffinityOutcome, normalize_affinities
 from flavor_pairing.normalize.entities import source_name_id_for
 from flavor_pairing.normalize.pipeline import NormalizeOutcome, normalize_source
 from flavor_pairing.parse.row_parser import parse_source
@@ -182,4 +183,33 @@ def attribute_rows(connection, source_id: str) -> List:
     return connection.execute(
         "SELECT * FROM entity_attributes WHERE source_id = ? ORDER BY attribute_id",
         (source_id,),
+    ).fetchall()
+
+
+def run_full_with_affinities(
+    connection,
+    config,
+    source_id: str,
+    rows: Sequence[Tuple],
+    tmp_path: Path,
+    clock,
+) -> AffinityOutcome:
+    """Ingest -> parse -> normalize -> normalize_affinities for one version."""
+    ingest_rows(connection, tmp_path, source_id, rows, clock)
+    parse_source(connection, config, source_id)
+    normalize_source(connection, config, source_id)
+    return normalize_affinities(connection, config, source_id)
+
+
+def group_rows(connection, source_id: str) -> List:
+    return connection.execute(
+        "SELECT * FROM affinity_groups WHERE source_id = ? ORDER BY affinity_id",
+        (source_id,),
+    ).fetchall()
+
+
+def member_rows(connection, affinity_id: str) -> List:
+    return connection.execute(
+        "SELECT * FROM affinity_members WHERE affinity_id = ? ORDER BY member_order",
+        (affinity_id,),
     ).fetchall()

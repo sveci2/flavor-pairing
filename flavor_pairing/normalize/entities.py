@@ -57,6 +57,7 @@ __all__ = [
     "REVIEW_STATUS_APPROVED",
     "REVIEW_STATUS_NEEDS_REVIEW",
     "REVIEW_STATUS_REJECTED",
+    "ROLE_AFFINITY_MEMBER",
     "ROLE_PAIRING_ENTRY",
     "ROLE_SUBJECT",
     "SOURCE_ROLES",
@@ -72,7 +73,12 @@ __all__ = [
 
 ROLE_SUBJECT = "subject"
 ROLE_PAIRING_ENTRY = "pairing_entry"
-SOURCE_ROLES = frozenset({ROLE_SUBJECT, ROLE_PAIRING_ENTRY})
+# CP6: affinity members resolve under their own role rather than overloading
+# pairing_entry (approved CP6 decision 4; docs/DECISIONS.md §A keys mappings
+# per role). source_role carries no database CHECK constraint, so this is a
+# code-level vocabulary extension only — schema.sql is unchanged.
+ROLE_AFFINITY_MEMBER = "affinity_member"
+SOURCE_ROLES = frozenset({ROLE_SUBJECT, ROLE_PAIRING_ENTRY, ROLE_AFFINITY_MEMBER})
 
 NORMALIZATION_STATUS_UNRESOLVED = "unresolved"
 NORMALIZATION_STATUS_AUTO_MAPPED = "auto_mapped"

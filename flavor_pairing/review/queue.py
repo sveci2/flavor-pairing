@@ -21,6 +21,14 @@ Predicates (approved CP5 design):
 - ``entity_needs_review`` — ``entities.review_status = 'needs_review'``.
 - ``unresolved_paired_entity`` — ``pairing_observations`` rows whose
   ``paired_entity_id IS NULL``.
+- ``unresolved_affinity_subject`` (CP6) — ``affinity_groups`` rows whose
+  ``subject_entity_id IS NULL``.
+- ``unresolved_affinity_member`` (CP6) — ``affinity_members`` rows whose
+  ``member_entity_id IS NULL``.
+
+The two CP6 affinity predicates are row-level conditions; the corresponding
+``unresolved_mapping`` items remain listed as well — they are a separate,
+decision-table review grain (approved CP6 decision 6).
 
 Ordering is fully deterministic: items are sorted by
 ``(table, reason, source_id, item_key)`` tuples, independent of insertion
@@ -38,6 +46,8 @@ __all__ = [
     "REASON_ENTITY_NEEDS_REVIEW",
     "REASON_REQUIRES_REVIEW_ROW",
     "REASON_UNCLASSIFIED_ROW",
+    "REASON_UNRESOLVED_AFFINITY_MEMBER",
+    "REASON_UNRESOLVED_AFFINITY_SUBJECT",
     "REASON_UNRESOLVED_MAPPING",
     "REASON_UNRESOLVED_PAIRED",
     "ReviewItem",
@@ -49,8 +59,12 @@ REASON_UNCLASSIFIED_ROW = "unclassified_row"
 REASON_REQUIRES_REVIEW_ROW = "requires_review_row"
 REASON_ENTITY_NEEDS_REVIEW = "entity_needs_review"
 REASON_UNRESOLVED_PAIRED = "unresolved_paired_entity"
+REASON_UNRESOLVED_AFFINITY_SUBJECT = "unresolved_affinity_subject"
+REASON_UNRESOLVED_AFFINITY_MEMBER = "unresolved_affinity_member"
 
 QUEUE_TABLES = (
+    "affinity_groups",
+    "affinity_members",
     "entities",
     "entity_source_names",
     "pairing_observations",
@@ -161,6 +175,35 @@ def build_review_queue(
                 source_id=row["source_id"],
                 item_key=row["observation_id"],
                 detail=f"paired_text_raw={row['paired_text_raw']!r}",
+            )
+        )
+
+    for row in connection.execute(
+        "SELECT affinity_id, source_id, affinity_text_raw FROM affinity_groups "
+        "WHERE subject_entity_id IS NULL"
+    ):
+        items.append(
+            ReviewItem(
+                table="affinity_groups",
+                reason=REASON_UNRESOLVED_AFFINITY_SUBJECT,
+                source_id=row["source_id"],
+                item_key=row["affinity_id"],
+                detail=f"affinity_text_raw={row['affinity_text_raw']!r}",
+            )
+        )
+
+    for row in connection.execute(
+        "SELECT m.affinity_id, m.member_order, m.member_text_raw, g.source_id "
+        "FROM affinity_members m JOIN affinity_groups g "
+        "ON m.affinity_id = g.affinity_id WHERE m.member_entity_id IS NULL"
+    ):
+        items.append(
+            ReviewItem(
+                table="affinity_members",
+                reason=REASON_UNRESOLVED_AFFINITY_MEMBER,
+                source_id=row["source_id"],
+                item_key=f"{row['affinity_id']}|{row['member_order']:04d}",
+                detail=f"member_text_raw={row['member_text_raw']!r}",
             )
         )
 
