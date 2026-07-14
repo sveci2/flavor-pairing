@@ -130,6 +130,44 @@ merging, no symmetry inference, self-pairs excluded), and raw-text
 duplicates (exact repeated `paired_text_raw`, including unresolved rows).
 All read-only.
 
+## Query layer (read-only)
+
+`flavor_pairing.query.FlavorPackage.load(package_dir)` loads a package
+directory (default: `data/sample/`) into a read-only snapshot.
+`package.query(name)` resolves an entity by **exact canonical name after
+`strip().casefold()` only** — no fuzzy, plural, alias, or substring
+matching; several entities sharing one folded name raise
+`AmbiguousEntityError` — and returns a single top-level
+`EntityQueryResult` containing:
+
+- `pairings.as_subject` / `pairings.as_paired` — the two observation
+  directions, kept strictly separate, every observation returned
+  individually with full provenance (`observation_id` identifies the
+  normalized observation; `source_record_id` links it back to the
+  parsed/raw source record; `source_id` identifies the source) and
+  strength fields exactly as stored (NULL stays `None`);
+- `reverse_pairs` — unordered pairs observed in both directions, each
+  direction's observations preserved unmerged;
+- `attributes` — attribute observations with provenance;
+- `affinities.as_subject` / `affinities.as_member` — affinity groups
+  (always distinct from binary pairings) with ordered members;
+- `unresolved_mappings` / `unresolved_observations` — the package-wide
+  review surface.
+
+The CLI renders plain text and JSON **from that same model**, so the two
+formats cannot diverge; JSON keeps stored NULLs as `null`, while plain
+text displays them as `-` purely as presentation:
+
+```bash
+python3 scripts/query_flavor.py apple
+python3 scripts/query_flavor.py apple --json
+python3 scripts/query_flavor.py apple --section pairings
+python3 scripts/query_flavor.py apple --package path/to/other/package
+```
+
+Exit codes: 0 success; 1 entity not found or ambiguous; 2 unusable
+package. Diagnostics go to stderr.
+
 ## Commands
 
 ```bash
@@ -149,6 +187,9 @@ python3 scripts/regenerate_sample.py --check
 
 # validate the committed sample package
 python3 scripts/validate_sample.py
+
+# query an entity in the canonical sample package (read-only)
+python3 scripts/query_flavor.py apple
 ```
 
 Regeneration is deterministic: content-derived IDs, a fixed clock, and
