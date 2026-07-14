@@ -1,0 +1,6 @@
+﻿source_name_id,source_id,source_text,source_role,entity_id,normalization_status,notes
+sn_test_0001,src_test_alpha,APPLE,subject,ent_test_0001,mapped,
+sn_test_0002,src_test_alpha,cinnamon,pairing_entry,ent_test_0002,mapped,
+sn_test_0003,src_test_alpha,*CARAMEL,pairing_entry,,unresolved,needs mapping
+sn_test_0004,src_test_beta,CHARD,subject,ent_test_0004,mapped,
+sn_test_0005,src_test_beta,anchovy,pairing_entry,ent_test_0005,mapped,

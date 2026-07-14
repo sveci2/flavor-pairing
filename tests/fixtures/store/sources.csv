@@ -1,0 +1,4 @@
+﻿source_id,source_name,source_format,source_uri,rights_status,allowed_use,notes
+src_test_alpha,"Test Alpha, Source",fmt_test,,project_owned_demo,software_testing,
+src_test_beta,Test Beta Source,fmt_test,https://example.invalid/beta,project_owned_demo,software_testing,"Multi-line notes.
+Second line."

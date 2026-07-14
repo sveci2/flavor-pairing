@@ -1,3 +1,3 @@
 ﻿affinity_id,source_id,source_record_id,subject_entity_id,affinity_text_raw,review_status
-aff_0001,src_synthetic_main_pairing,mp_0009,ent_0001,apple + cinnamon + walnut,needs_review
-aff_0002,src_synthetic_main_pairing,mp_0014,ent_0002,tomato + basil + olive oil,needs_review
+aff_062b48910a2c8d3d,src_synthetic_main_pairing,src_synthetic_main_pairing:861c6b4637e25665:1,ent_0002,tomato + basil + olive oil,needs_review
+aff_b337364c3d64a517,src_synthetic_main_pairing,src_synthetic_main_pairing:173b9dbd739c2811:1,ent_0001,apple + cinnamon + walnut,needs_review

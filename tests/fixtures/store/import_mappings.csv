@@ -1,0 +1,4 @@
+﻿source_format,input_column,target_file,target_field,transform_rule,required
+fmt_test,main,raw_source_rows.csv,subject_raw,copy exactly,1
+fmt_test,pairing,raw_source_rows.csv,entry_raw,copy exactly,1
+fmt_test,(not present),raw_source_rows.csv,quality_raw,leave blank,0

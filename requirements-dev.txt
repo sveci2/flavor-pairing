@@ -1,0 +1,2 @@
+# Development-only dependencies. The runtime pipeline is standard library only.
+pytest>=7.0

@@ -1,21 +1,21 @@
 ﻿source_id,source_record_id,source_order,subject_raw,entry_raw,quality_raw,raw_payload_json
-src_synthetic_main_pairing,mp_0001,1,APPLE,Season: autumn,,
-src_synthetic_main_pairing,mp_0002,2,APPLE,"Taste: sweet, tart",,
-src_synthetic_main_pairing,mp_0003,3,APPLE,Weight: medium,,
-src_synthetic_main_pairing,mp_0004,4,APPLE,"Techniques: bake, poach, raw",,
-src_synthetic_main_pairing,mp_0005,5,APPLE,cinnamon,,
-src_synthetic_main_pairing,mp_0006,6,APPLE,WALNUT,,
-src_synthetic_main_pairing,mp_0007,7,APPLE,*CARAMEL,,
-src_synthetic_main_pairing,mp_0008,8,APPLE,Flavor Affinities,,
-src_synthetic_main_pairing,mp_0009,9,APPLE,apple + cinnamon + walnut,,
-src_synthetic_main_pairing,mp_0010,10,TOMATO,"Taste: sweet, sour, umami",,
-src_synthetic_main_pairing,mp_0011,11,TOMATO,basil,,
-src_synthetic_main_pairing,mp_0012,12,TOMATO,GARLIC,,
-src_synthetic_main_pairing,mp_0013,13,TOMATO,Flavor Affinities,,
-src_synthetic_main_pairing,mp_0014,14,TOMATO,tomato + basil + olive oil,,
-src_synthetic_main_pairing,mp_0015,15,BASIL,tomato,,
-src_synthetic_main_pairing,mp_0016,16,BASIL,Tips: add near the end,,
-src_synthetic_quality,q_0001,1,CHARD,anchovy,heaven,
-src_synthetic_quality,q_0002,2,CHARD,bacon,high_rec,
-src_synthetic_quality,q_0003,3,CHARD,basil,freq_rec,
-src_synthetic_quality,q_0004,4,CHARD,blue cheese,rec,
+src_synthetic_main_pairing,src_synthetic_main_pairing:14921e5fd584428f:1,15,BASIL,tomato,,"{""main"":""BASIL"",""pairing"":""tomato""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:15477ccecbd8fc39:1,16,BASIL,Tips: add near the end,,"{""main"":""BASIL"",""pairing"":""Tips: add near the end""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:15e57f1ada561439:1,10,TOMATO,"Taste: sweet, sour, umami",,"{""main"":""TOMATO"",""pairing"":""Taste: sweet, sour, umami""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:173b9dbd739c2811:1,9,APPLE,apple + cinnamon + walnut,,"{""main"":""APPLE"",""pairing"":""apple + cinnamon + walnut""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:186a648f977d0e7f:1,7,APPLE,*CARAMEL,,"{""main"":""APPLE"",""pairing"":""*CARAMEL""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:2a9b0663acedbb3f:1,6,APPLE,WALNUT,,"{""main"":""APPLE"",""pairing"":""WALNUT""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:2ced01d74813128e:1,2,APPLE,"Taste: sweet, tart",,"{""main"":""APPLE"",""pairing"":""Taste: sweet, tart""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:39104c799c3eb43f:1,8,APPLE,Flavor Affinities,,"{""main"":""APPLE"",""pairing"":""Flavor Affinities""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:575a8f7b853778c3:1,3,APPLE,Weight: medium,,"{""main"":""APPLE"",""pairing"":""Weight: medium""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:582ae4c3ac02f08f:1,11,TOMATO,basil,,"{""main"":""TOMATO"",""pairing"":""basil""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:79bb8395114c233c:1,12,TOMATO,GARLIC,,"{""main"":""TOMATO"",""pairing"":""GARLIC""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:861c6b4637e25665:1,14,TOMATO,tomato + basil + olive oil,,"{""main"":""TOMATO"",""pairing"":""tomato + basil + olive oil""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:c0f934063c95ba65:1,4,APPLE,"Techniques: bake, poach, raw",,"{""main"":""APPLE"",""pairing"":""Techniques: bake, poach, raw""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:c12e7c0ae0154aad:1,1,APPLE,Season: autumn,,"{""main"":""APPLE"",""pairing"":""Season: autumn""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:d5137589315f0971:1,13,TOMATO,Flavor Affinities,,"{""main"":""TOMATO"",""pairing"":""Flavor Affinities""}"
+src_synthetic_main_pairing,src_synthetic_main_pairing:e1e8a3df70026ea7:1,5,APPLE,cinnamon,,"{""main"":""APPLE"",""pairing"":""cinnamon""}"
+src_synthetic_quality,src_synthetic_quality:bcf9712f7ea84ca9:1,1,CHARD,anchovy,heaven,"{""ingredient1"":""CHARD"",""ingredient2"":""anchovy"",""quality"":""heaven""}"
+src_synthetic_quality,src_synthetic_quality:d4b099a7e80f7282:1,2,CHARD,bacon,high_rec,"{""ingredient1"":""CHARD"",""ingredient2"":""bacon"",""quality"":""high_rec""}"
+src_synthetic_quality,src_synthetic_quality:dbd7cae5a9a6b492:1,4,CHARD,blue cheese,rec,"{""ingredient1"":""CHARD"",""ingredient2"":""blue cheese"",""quality"":""rec""}"
+src_synthetic_quality,src_synthetic_quality:dc202876ba449c83:1,3,CHARD,basil,freq_rec,"{""ingredient1"":""CHARD"",""ingredient2"":""basil"",""quality"":""freq_rec""}"

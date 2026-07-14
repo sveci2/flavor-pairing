@@ -1,0 +1,7 @@
+﻿affinity_id,member_order,member_entity_id,member_text_raw,normalization_status
+aff_test_0001,1,ent_test_0001,apple,mapped
+aff_test_0001,2,ent_test_0002,cinnamon,mapped
+aff_test_0001,3,,walnut,unresolved
+aff_test_0002,1,ent_test_0004,chard,mapped
+aff_test_0002,2,ent_test_0005,anchovy,mapped
+aff_test_0002,3,,garlic,unresolved

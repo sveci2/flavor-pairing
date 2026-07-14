@@ -1,0 +1,4 @@
+﻿observation_id,source_id,source_record_id,subject_entity_id,paired_entity_id,paired_text_raw,strength_label,strength_score,strength_method,normalization_status,review_status
+obs_test_0001,src_test_alpha,src_test_alpha:aaaa000000000001:1,ent_test_0001,ent_test_0002,cinnamon,,,,mapped,approved
+obs_test_0002,src_test_alpha,src_test_alpha:aaaa000000000002:1,ent_test_0001,,*CARAMEL,holy_grail,4,asterisk_uppercase,unresolved,needs_review
+obs_test_0003,src_test_beta,src_test_beta:bbbb000000000001:1,ent_test_0004,ent_test_0005,anchovy,holy_grail,4,explicit_label:heaven,mapped,approved
