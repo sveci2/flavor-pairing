@@ -1,0 +1,5 @@
+# HTTP API layer dependency (CP9). Only flavor_pairing_api/ needs Flask; the
+# flavor_pairing runtime pipeline stays standard library only. Pinned to the
+# 3.1 minor line so a future Flask 3.x release cannot silently change the
+# project's Python 3.9 compatibility contract.
+Flask>=3.1,<3.2

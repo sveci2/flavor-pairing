@@ -1,2 +1,4 @@
-# Development-only dependencies. The runtime pipeline is standard library only.
+# Development-only dependencies. The runtime pipeline is standard library only;
+# the API layer's own dependency lives in requirements-api.txt.
+-r requirements-api.txt
 pytest>=7.0
