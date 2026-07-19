@@ -1,29 +1,40 @@
 name: tests
 
-# CP7 CI: compile, test, prove the committed sample regenerates
-# byte-identically (--check never modifies the checkout), validate, and
-# whitespace-check. No secrets, no private data, no deployment.
+# CP7+CP9 CI: compile, test on the supported Python floor (3.9) and a modern
+# interpreter (3.12), prove the committed sample regenerates byte-identically
+# (--check never modifies the checkout), validate, and whitespace-check.
+# Pushes build only main; feature branches are covered by pull_request (a
+# push trigger for them would duplicate runs on open PRs). No secrets, no
+# private data, no deployment.
 on:
   pull_request:
   push:
     branches:
       - main
-      - feature/data-foundation
 
 jobs:
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - "3.9"
+          - "3.12"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
           cache: pip
-          cache-dependency-path: requirements-dev.txt
+          cache-dependency-path: |
+            requirements-dev.txt
+            requirements-api.txt
       - name: Install development dependencies
-        run: pip install -r requirements-dev.txt
-      - name: Byte-compile runtime and scripts
-        run: python -m compileall -q flavor_pairing scripts
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+      - name: Byte-compile runtime, scripts, and API layer
+        run: python -m compileall -q flavor_pairing scripts flavor_pairing_api
       - name: Run the test suite
         run: python -m pytest
       - name: Verify the committed sample regenerates byte-identically

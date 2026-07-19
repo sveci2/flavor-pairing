@@ -7,10 +7,12 @@ Usage:
         [--json]
 
 Both output formats are rendered from the SAME top-level
-``EntityQueryResult`` model (flavor_pairing.query), so plain text and JSON
-cannot diverge. JSON preserves stored NULLs as ``null``; plain text shows
-them as ``-`` purely as presentation. All operations are read-only;
-resolution is exact ``strip().casefold()`` lookup only.
+``EntityQueryResult`` model (flavor_pairing.query) through the shared
+serializer (flavor_pairing.serialization), so plain text and JSON cannot
+diverge — and the CP9 HTTP API renders from that same serializer. JSON
+preserves stored NULLs as ``null``; plain text shows them as ``-`` purely
+as presentation. All operations are read-only; resolution is exact
+``strip().casefold()`` lookup only.
 
 Exit codes: 0 success; 1 entity not found or ambiguous; 2 unusable package
 (QueryError). Diagnostics go to stderr.
@@ -19,11 +21,10 @@ Exit codes: 0 success; 1 entity not found or ambiguous; 2 unusable package
 from __future__ import annotations
 
 import argparse
-import dataclasses
 import json
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence, Tuple, Union
+from typing import List, Optional, Sequence
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))  # allow `python3 scripts/query_flavor.py`
@@ -35,64 +36,9 @@ from flavor_pairing.query import (
     PairingResult,
     QueryError,
 )
+from flavor_pairing.serialization import SECTIONS, result_to_dict, selected_fields
 
 DEFAULT_PACKAGE_DIR = REPO_ROOT / "data" / "sample"
-
-SECTIONS = ("all", "pairings", "reverse", "attributes", "affinities", "unresolved")
-
-# EntityQueryResult field names per section (the entity itself is always shown).
-_SECTION_FIELDS: Dict[str, Tuple[str, ...]] = {
-    "pairings": ("pairings",),
-    "reverse": ("reverse_pairs",),
-    "attributes": ("attributes",),
-    "affinities": ("affinities",),
-    "unresolved": ("unresolved_mappings", "unresolved_observations"),
-}
-_ALL_FIELDS: Tuple[str, ...] = (
-    "pairings", "reverse_pairs", "attributes", "affinities",
-    "unresolved_mappings", "unresolved_observations",
-)
-
-
-def _selected_fields(section: str) -> Tuple[str, ...]:
-    return _ALL_FIELDS if section == "all" else _SECTION_FIELDS[section]
-
-
-# JSON value types (Python 3.9-compatible typing.Union spelling; PEP 604
-# unions would be evaluated at runtime and are 3.10+ only).
-JSONScalar = Union[None, bool, int, float, str]
-JSONValue = Union[JSONScalar, List["JSONValue"], Dict[str, "JSONValue"]]
-# What dataclasses.asdict() yields for EntityQueryResult: like JSONValue,
-# but tuples may appear wherever the models hold tuples.
-DataclassValue = Union[
-    JSONScalar,
-    Tuple["DataclassValue", ...],
-    List["DataclassValue"],
-    Dict[str, "DataclassValue"],
-]
-
-
-def _to_json_value(value: DataclassValue) -> JSONValue:
-    """Recursively convert dataclass output to JSON-native containers.
-
-    Tuples become lists (JSON has no tuple), dict keys stay strings, and
-    scalars — including None, which must remain JSON null — pass through
-    unchanged.
-    """
-    if isinstance(value, dict):
-        return {key: _to_json_value(item) for key, item in value.items()}
-    if isinstance(value, (list, tuple)):
-        return [_to_json_value(item) for item in value]
-    return value
-
-
-def result_to_dict(result: EntityQueryResult, section: str = "all") -> Dict[str, JSONValue]:
-    """The JSON-ready view of one EntityQueryResult (NULLs stay null)."""
-    full = dataclasses.asdict(result)
-    payload: Dict[str, JSONValue] = {"entity": _to_json_value(full["entity"])}
-    for field_name in _selected_fields(section):
-        payload[field_name] = _to_json_value(full[field_name])
-    return payload
 
 
 def _show(value: object) -> str:
@@ -128,7 +74,7 @@ def render_text(result: EntityQueryResult, section: str = "all") -> str:
         f"  normalization_status={_show(entity.normalization_status)} "
         f"review_status={_show(entity.review_status)} notes={_show(entity.notes)}",
     ]
-    fields = _selected_fields(section)
+    fields = selected_fields(section)
 
     if "pairings" in fields:
         lines.append(f"Pairings as subject ({len(result.pairings.as_subject)}):")

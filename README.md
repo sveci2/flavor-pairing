@@ -25,10 +25,16 @@ flavor_pairing/          runtime package (Python 3.9+, standard library only)
     review/              CP5+CP6: read-only review-queue report
     dupes/               CP6: read-only duplicate & reverse-pair reports
     validation.py        CP7: sample-package validation rules
+    query.py             CP8: read-only query layer (FlavorPackage)
+    serialization.py     CP8/CP9: shared JSON-ready rendering of query results
+flavor_pairing_api/      CP9: read-only HTTP JSON API over the query layer
+                         (Flask via requirements-api.txt; the only layer with
+                         a third-party runtime dependency)
 scripts/
     import_to_raw.py     CLI wrapper for raw ingestion of one external CSV
     regenerate_sample.py CP7: canonical sample regeneration (and --check)
     validate_sample.py   CP7: thin wrapper over flavor_pairing.validation
+    query_flavor.py      CP8: read-only query CLI
 data/
     sample_input/        public source input files (project-owned demo data)
     sample/              the canonical sample package (see file roles below)
@@ -154,9 +160,10 @@ matching; several entities sharing one folded name raise
 - `unresolved_mappings` / `unresolved_observations` — the package-wide
   review surface.
 
-The CLI renders plain text and JSON **from that same model**, so the two
-formats cannot diverge; JSON keeps stored NULLs as `null`, while plain
-text displays them as `-` purely as presentation:
+The CLI renders plain text and JSON **from that same model** through the
+shared serializer (`flavor_pairing/serialization.py`) — also used by the
+HTTP API below, so no rendering can diverge; JSON keeps stored NULLs as
+`null`, while plain text displays them as `-` purely as presentation:
 
 ```bash
 python3 scripts/query_flavor.py apple
@@ -167,6 +174,80 @@ python3 scripts/query_flavor.py apple --package path/to/other/package
 
 Exit codes: 0 success; 1 entity not found or ambiguous; 2 unusable
 package. Diagnostics go to stderr.
+
+## HTTP API (read-only)
+
+`flavor_pairing_api/` exposes the query layer over HTTP JSON for the
+future responsive website and mobile client. It is the only layer with a
+third-party runtime dependency — Flask, installed from
+`requirements-api.txt`; `flavor_pairing/` itself remains standard library
+only.
+
+```bash
+pip install -r requirements-api.txt
+
+# development server over data/sample (default)
+flask --app flavor_pairing_api run
+
+# development server over another package directory
+FLAVOR_PACKAGE_DIR=path/to/pkg flask --app flavor_pairing_api run
+```
+
+The Flask development server is for local development only; it is **not**
+a production deployment server, and production serving is out of scope.
+
+`create_app(package_dir=...)` is the application factory. Package
+directory precedence: explicit argument, then the `FLAVOR_PACKAGE_DIR`
+environment variable, then `data/sample`. Tests normally pass an explicit
+directory; environment-variable behavior is tested with pytest monkeypatch
+so changes are temporary and isolated. The package is loaded **once at
+startup** into a read-only `FlavorPackage` snapshot using the same query
+layer and shared serializer as the CLI; requests never re-read the CSVs,
+and no endpoint writes anything. The resolved directory (symlinks
+followed) is refused when any exact path component is the private data
+directory. If the package is missing or malformed, the app still starts;
+`/health` and every registered `/api/v1` data route return 503, and
+response bodies never expose filesystem details (they go to the server
+log only).
+
+`GET /health` is unversioned and operational: `{"status": "ok"}`, or 503
+`{"status": "unavailable"}` when the package could not be loaded. All
+data endpoints live under the stable initial namespace `/api/v1`:
+
+| Endpoint | Returns |
+|---|---|
+| `GET /api/v1/entities/{name}` | the complete `EntityQueryResult` |
+| `GET /api/v1/entities/{name}/pairings` | `as_subject` / `as_paired`, separately |
+| `GET /api/v1/entities/{name}/reverse-pairs` | both observed directions, unaggregated |
+| `GET /api/v1/entities/{name}/attributes` | attribute observations with provenance |
+| `GET /api/v1/entities/{name}/affinities` | `as_subject` / `as_member` affinity groups |
+| `GET /api/v1/review/unresolved` | package-wide unresolved mappings and observations |
+
+Semantics are exactly the query layer's: `{name}` resolves by exact
+canonical-name lookup after `strip().casefold()` only — no fuzzy, plural,
+alias, substring, or automatic matching. Every stored observation is
+returned separately with `source_id`, `source_record_id`,
+`observation_id`, raw text, strength, normalization status, and review
+status exactly as stored; stored NULLs are JSON `null`; pairing
+directions are never merged or treated as symmetric; reverse-pair
+evidence is never aggregated or scored; affinity groups remain distinct
+from binary pairings. JSON output is deterministic (sorted keys) and
+rendered by the same shared serializer as the CLI's `--json`, so the two
+cannot diverge.
+
+Errors use one JSON shape — `{"error": <code>, "message": <text>, ...}`:
+
+- **404** `entity_not_found` — no entity has the requested canonical name;
+- **409** `ambiguous_entity` — several entities share the folded name;
+  the body carries the sorted candidate entity IDs (the request is
+  well-formed and the entities exist, so neither 400 nor 404 fits, and
+  300 is a redirection-class status with no body convention);
+- **503** `package_unavailable` — the package directory is missing or
+  malformed; no filesystem details in the body.
+
+Out of scope for the API: authentication, user accounts, favourites,
+recommendations, ranking, score aggregation, database publication, CORS,
+rate limiting, production serving, deployment, and any write endpoint.
 
 ## Commands
 
@@ -190,6 +271,9 @@ python3 scripts/validate_sample.py
 
 # query an entity in the canonical sample package (read-only)
 python3 scripts/query_flavor.py apple
+
+# serve the read-only HTTP API locally (development server only)
+flask --app flavor_pairing_api run
 ```
 
 Regeneration is deterministic: content-derived IDs, a fixed clock, and
@@ -204,10 +288,12 @@ needs no flag.
 ## Continuous integration
 
 `.github/workflows/tests.yml` runs on pull requests and on pushes to
-`main` and `feature/data-foundation`: compileall → pytest →
+`main` (feature branches are covered by their pull requests), on a Python
+matrix of 3.9 — the supported floor — and 3.12: pip upgrade + install →
+compileall (runtime, scripts, API layer) → pytest →
 `regenerate_sample.py --check` (fails if the committed sample drifts from
 what the pipeline produces) → `validate_sample.py` → `git diff --check`.
-Python 3.12, no secrets, no private data, no deployment.
+No secrets, no private data, no deployment.
 
 ## Private-data boundary
 
@@ -248,12 +334,14 @@ path.
 3. Rerun normalization/regeneration: the machine respects the row
    verbatim; derived rows follow it; validation confirms.
 
-## Out of scope for this phase (future app/API work)
+## Out of scope for this phase (future app work)
 
-Consumer-facing application and API, recommendation ranking, the derived
-`pairing_edges` aggregation, fuzzy matching, automatic entity creation,
-score aggregation, chemical/compound enrichment, PostgreSQL migration
-(portability is preserved), and any processing of rights-unresolved
+Consumer-facing application/UI (the read-only HTTP API itself exists as
+of CP9 — see above), recommendation ranking, the derived `pairing_edges`
+aggregation, fuzzy matching, automatic entity creation, score
+aggregation, chemical/compound enrichment, PostgreSQL migration
+(portability is preserved), authentication, CORS, rate limiting,
+production serving, deployment, and any processing of rights-unresolved
 external datasets.
 
 ## Fields deliberately removed from the required core
